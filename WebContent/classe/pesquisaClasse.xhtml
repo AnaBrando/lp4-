@@ -1,0 +1,44 @@
+<ui:composition template="/WEB-INF/template/LayoutPadrao.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:o="http://ominifaces.org/ui">
+	<ui:define name="titulo">Novo Classe</ui:define>
+	<ui:define name="corpo">
+		<h1>Pesquisa Classe</h1>
+		<h:form id="frmPesquisa">
+			<p:messages id="messages" autoUpdate="true" closable="true"/>
+				<p:toolbar style="margin-top:20px">
+					<p:toolbarGroup>
+						<p:commanButton value="Novo" id="BotaoNovo" action="/classe/CadastroClass.xhtml"/>
+					</p:toolbarGroup>
+				 </p:toolbar>
+				<p:dataTable id="classeTable" value="#{pesquisaClasseBean.classes}"
+				var="fabricante" style="margin-top:20px" emptyMessage="Nnehuma classe encontrada" paginatorPosition="bottom">
+					<p:column headerText="Código" style="text-align:center;cwidth:100px">
+						<h:outputText value="#{classe.codigo}">
+					</p:column>
+					<p:column headerText="Nome">
+								<h:outputText value="#{classe.descricao}">
+					</p:column>
+					<p:column style="text-align:center;cwidth:100px">
+						<p:button outcome="CadastroFabricante" icon="ui-icon-pencil" title="Editar">
+							<f:param name="fabricante" value="#{classe.codigo}"/>
+						</p:button>
+						<p:commanButton icon="ui-icon-trash" title="Excluir"
+						oncomplete="confirmacaoExclusao.show()" process="@this"
+						update=":frmPesquisa:confirmacaoExclusaoDialog">
+							<f:setPropertyActionListener value="{classe}" target="{pesquisaClasseBean.classeSelecionada}"/>
+					</p:column>
+				</p:dataTable>
+				<p:confirmDialog id="confirmacaoExclusaoDialog" widgetVar="confirmacaoExclusao"
+				message="Tem certeza que deseja excluir a classe #{pesquisaClasseBean.classeSelecionada.nome}?" header="Exclusão de classe" severity="alert">
+					<p:button value="Nao" onclick="confirmacaoExclusao.hide(); return false;"/>
+					<p:commandButton value="Sim" update=":frmPesquisa:classeTable"
+						onclick="confirmacaoExclusao.hide()" action="#{pesquisaClasseBean.excluir}"/>
+				</p:confirmDialog>
+		</h:form>
+	</ui:define>
+</ui:composition>
